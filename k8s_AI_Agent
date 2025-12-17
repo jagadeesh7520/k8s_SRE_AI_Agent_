@@ -1,125 +1,100 @@
+# 🤖 AI SRE for Kubernetes (Minikube + Ollama)
 
+This project demonstrates an **AI-powered Site Reliability Engineer (SRE)**
+that automatically diagnoses and proposes fixes for common Kubernetes pod failures
+using **Ollama (LLM)**.
 
-🔹 STEP 1: Update System
+---
+
+## 🧰 Environment
+- OS: Ubuntu 24.04 LTS
+- Kubernetes: Minikube
+- Container Runtime: Docker
+- AI Model: Ollama (Gemma 2B)
+- Language: Python 3
+
+---
+
+## 1️⃣ System Update
+```bash
 sudo apt update -y
 sudo apt upgrade -y
-
-🔹 STEP 2: Install Required Packages
+2️⃣ Install Required Packages
+bash
+Copy code
 sudo apt install -y curl wget apt-transport-https ca-certificates gnupg lsb-release
-
-🔹 STEP 3: Install Docker
+3️⃣ Install Docker
+bash
+Copy code
 sudo apt install -y docker.io
 sudo systemctl enable docker
 sudo systemctl start docker
-
 Allow Docker Without sudo
+bash
+Copy code
 sudo usermod -aG docker $USER
 sudo chmod 666 /var/run/docker.sock
 newgrp docker
-
-
 Verify:
 
+bash
+Copy code
 docker version
-
-🔹 STEP 4: Check Virtualization Support
+4️⃣ Check Virtualization Support
+bash
+Copy code
 egrep -q 'vmx|svm' /proc/cpuinfo && echo yes || echo no
-
-🔹 STEP 5: Install Minikube
+5️⃣ Install Minikube
+bash
+Copy code
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
-
-
 Verify:
 
+bash
+Copy code
 minikube version
-
-🔹 STEP 6: Install kubectl
+6️⃣ Install kubectl
+bash
+Copy code
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
 sudo mv kubectl /usr/local/bin/
-
-
 Verify:
 
+bash
+Copy code
 kubectl version --client
-
-🔹 STEP 7: Start Minikube (Docker Driver)
+7️⃣ Start Minikube (Docker Driver)
+bash
+Copy code
 minikube start --driver=docker
-
-
 Verify:
 
+bash
+Copy code
 minikube status
 kubectl get nodes
-
-🔹 STEP 8: Install Python & Virtual Environment
+8️⃣ Install Python & Virtual Environment
+bash
+Copy code
 sudo apt install -y python3 python3-pip python3-venv
-
-
 Verify:
 
+bash
+Copy code
 python3 --version
 pip3 --version
-
-🔹 STEP 9: Install Ollama
+9️⃣ Install Ollama
+bash
+Copy code
 curl -fsSL https://ollama.com/install.sh | sh
-
-
 Start Ollama:
 
+bash
+Copy code
 ollama serve
+Open a new terminal and pull model:
 
-
-(Open new terminal)
-
-Pull model:
-
-ollama pull gemma:2b
-
-🔹 STEP 10: Create AI SRE Project
-mkdir ai-sre-demo
-cd ai-sre-demo
-
-Create Virtual Environment
-python3 -m venv venv
-source venv/bin/activate
-
-Install Python Dependencies
-pip install requests ollama
-
-🔹 STEP 11: Create AI SRE Script
-nano ai_sre.py
-
-
-➡️ Paste your AI SRE Python code
-Save & exit.
-
-🔹 STEP 12: Create Broken App (Image Error)
-nano broken-image.yaml
-
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: broken-app
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: broken-app
-  template:
-    metadata:
-      labels:
-        app: broken-app
-    spec:
-      containers:
-      - name: app
-        image: nginx:not-exist
-
-
-Apply:
-
-kubectl apply -f broken-image.yaml
-
-🔹 STEP 13: Run AI SRE
-python3 ai_sre.py
+bash
+Copy code
